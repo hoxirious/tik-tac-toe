@@ -1,0 +1,14 @@
+.square {
+    height: 40px;
+    width: 40px;
+    border: 1px solid ;
+    float: left;
+    margin-right: 1px;
+    margin-top: 1px; 
+  }
+
+  .board-row:after {
+    clear: both;
+    content: "";
+    display: table;
+  }

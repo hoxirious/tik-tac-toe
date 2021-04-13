@@ -4,7 +4,23 @@ import Cell from "./Cell"
 function Board() {
     return (
         <div>
-            <Cell/>
+            <h1>TIC TAC TOE!</h1>
+            <div className="board-row">
+                <Cell/>
+                <Cell/>
+                <Cell/>
+            </div>
+            <div className="board-row">
+                <Cell/>
+                <Cell/>
+                <Cell/>
+            </div>
+            <div className="board-row">
+                <Cell/>
+                <Cell/>
+                <Cell/>
+            </div>
+            
         </div>
     )
 }
