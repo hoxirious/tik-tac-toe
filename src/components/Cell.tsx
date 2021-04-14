@@ -1,20 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Style.css';
 
-function Cell() {
-    const [player,setPlayer] = useState('');
-
-    const playerHandle = (click:boolean) =>{
-        if(click === true)
-        {
-            return 'X';
-        } 
-        else return 'O';
-    }
-
+function Cell(props:any) {
+    const {player,onClick} = props;
     return (
         <div>            
-            <button className="square" onClick={() =>setPlayer(playerHandle(false))}>{player}</button>
+            <button className="square" onClick={onClick} >{player}</button>
+            
         </div>
     )
 }
