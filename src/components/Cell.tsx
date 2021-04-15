@@ -5,8 +5,7 @@ function Cell(props:any) {
     const {player,onClick} = props;
     return (
         <div>            
-            <button className="square" onClick={onClick} >{player}</button>
-            
+            <button className="square" onClick={onClick}> {player} </button>
         </div>
     )
 }
