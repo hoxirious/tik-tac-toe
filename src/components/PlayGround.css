@@ -1,0 +1,40 @@
+:root{
+    --cyan: #4BC3B5;
+    --milkywhite: #F1F7ED;
+    --lightcyan: #91C7B1;
+    --red: #b62743;
+    --darkblue: #1C2C54;
+    --lightblue: #6289eb;
+    --pink: #D175B7; 
+  }
+.nav{
+    background-color: var(--lightblue);
+    height: 30px;   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 30%;
+    font-size: 1rem;
+    z-index: 999;
+}
+.nav-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px; 
+}
+.nav-menu{
+    display: grid; 
+    grid-template-columns: repeat(3,1fr);
+    list-style: none;
+    text-align: center;
+    justify-content: center;
+}
+.nav-item{
+    height: 30px; 
+
+}
+.nav-links{
+
+}
+
