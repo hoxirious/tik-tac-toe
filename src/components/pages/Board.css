@@ -1,0 +1,156 @@
+:root {
+  --cyan: #4bc3b5;
+  --milkywhite: #f1f7ed;
+  --lightcyan: #91c7b1;
+  --red: #b33951;
+  --darkblue: #1c2c54;
+  --pink: #d175b7;
+}
+
+.container {
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  height: 667px;
+  font-family: "Times New Roman", Times, serif;
+  background-color: var(--darkblue);
+  margin: auto;
+}
+.container-title {
+  color: var(--red);
+  margin-top: 50px;
+  font-size: 2.7em;
+  font-weight: bold;
+  align-self: center;
+}
+.container-main {
+  display: flex;
+  flex-flow: column;
+  margin-top: 25px;
+}
+
+.players-status {
+  display: grid;
+  grid-template-columns: repeat(2, 100px);
+  align-self: center;
+  margin: 0px 10px 10px 10px;
+  margin-right: 10px;
+  border-radius: 15%;
+  border-width: 5px;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+#active-x-player {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+#active-o-player {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+#inactive-x-player {
+  border-color: var(--darkblue);
+  font-size: 1rem;
+  opacity: 50%;
+}
+#inactive-o-player {
+  border-color: var(--darkblue);
+  font-size: 1rem;
+  opacity: 50%;
+}
+
+.board {
+  display: grid;
+  align-self: center;
+  margin-top: 20px;
+}
+
+#board-3x3 {
+  grid-template-columns: repeat(3, 72px);
+}
+#board-4x4 {
+  grid-template-columns: repeat(4, 72px);
+}
+
+.square {
+  display: table-cell;
+  background-color: #eed15d;
+  height: 70px;
+  width: 70px;
+  border: none;
+  float: left;
+  margin-right: 1px;
+  margin-top: 1px;
+  box-shadow: 2px 6px 10px 2px var(--red);
+}
+
+#square-xplayer {
+  color: var(--cyan);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+#square-oplayer {
+  color: var(--pink);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+@media screen and (min-width: 667px) {
+  .container {
+    width: 90%;
+  }
+  .container-title {
+    font-size: 3.7em;
+  }
+
+  .players-status {
+    display: grid;
+    grid-template-columns: repeat(2, 130px);
+    font-size: 1.7rem;
+  }
+
+  #inactive-x-player {
+    border-color: var(--darkblue);
+    font-size: 1.3rem;
+    opacity: 50%;
+  }
+  #inactive-o-player {
+    border-color: var(--darkblue);
+    font-size: 1.3rem;
+    opacity: 50%;
+  }
+
+  .board {
+    display: grid;
+    align-self: center;
+    margin-top: 20px;
+  }
+  #board-3x3 {
+    grid-template-columns: repeat(3, 92px);
+  }
+  #board-4x4 {
+    grid-template-columns: repeat(4, 92px);
+  }
+
+  .square {
+    height: 90px;
+    width: 90px;
+  }
+  #square-xplayer {
+    font-size: 2.5rem;
+  }
+  #square-oplayer {
+    font-size: 2.5rem;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .container {
+    display: flex;
+    width: 80%;
+    height: 1024;
+  }
+}

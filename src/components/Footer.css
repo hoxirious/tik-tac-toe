@@ -1,0 +1,31 @@
+:root {
+  --cyan: #4bc3b5;
+  --milkywhite: #f1f7ed;
+  --lightcyan: #91c7b1;
+  --red: #b62743;
+  --darkblue: #1c2c54;
+  --lightblue: #6289eb;
+  --pink: #d175b7;
+}
+.footer {
+  background-color: var(--lightblue);
+  height: 50px;
+  display: flex;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+@media screen and (min-width: 667px) {
+  .footer {
+    display: flex;
+    max-width: 90%;
+  }
+}
+@media screen and (min-width: 1100px) {
+  .footer {
+    display: flex;
+    max-width: 80%;
+  }
+}
