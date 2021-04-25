@@ -19,22 +19,29 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+export type SizeOfBoard = { size: number };
+export const SizeContext = React.createContext <Partial<SizeOfBoard>>({});
+
 const App = () => {
   return (
     <Router>
-      <Navbar/>
+      <Navbar />
       <Switch>
         <Route path="/" exact>
-          <Home/>
+          <Home />
         </Route>
         <Route path="/3x3" exact>
-          <PlayGround size={3} />
+          <SizeContext.Provider value={{ size: 3 }}>
+            <PlayGround />
+          </SizeContext.Provider>
         </Route>
         <Route path="/4x4" exact>
-          <PlayGround size={4} />
+          <SizeContext.Provider value={{ size: 4 }}>
+            <PlayGround />
+          </SizeContext.Provider>
         </Route>
       </Switch>
-      <Footer/>
+      <Footer />
     </Router>
   );
 };

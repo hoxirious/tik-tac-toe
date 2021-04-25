@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import './Navbar.css';
+import "./Navbar.css";
 
 function Navbar() {
   return (
@@ -10,7 +10,7 @@ function Navbar() {
           <ul className="nav-menu">
             <li className="nav-item">
               <Link to="/" className="nav-links">
-                Home
+                H0m3
               </Link>
             </li>
             <li className="nav-item">
