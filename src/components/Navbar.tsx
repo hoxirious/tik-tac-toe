@@ -1,32 +1,20 @@
 import { Link } from "react-router-dom";
-import './styles/layout/loader.styles.layout';
+import { Navbar, Nav } from "react-bootstrap";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./pages/Home.page";
+import PlayGround from "./PlayGround";
 
-function Navbar() {
+function Navbars() {
   return (
-    <div>
-      <nav className="nav">
-        <div className="nav-container">
-          <ul className="nav-menu">
-            <li className="nav-item">
-              <Link to="/" className="nav-links">
-                H0m3
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/3x3" className="nav-links">
-                3x3
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/4x4" className="nav-links">
-                4x4
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
+    <Navbar bg="dark" variant="dark">
+      <Navbar.Brand as={Link} to="/">
+        Tic-tac-toe
+      </Navbar.Brand>
+      <Nav className="mr-auto">
+        <Link to="/board-size">Board size</Link>
+      </Nav>
+    </Navbar>
   );
 }
 
-export default Navbar;
+export default Navbars;

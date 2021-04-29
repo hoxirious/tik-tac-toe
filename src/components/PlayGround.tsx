@@ -1,40 +1,54 @@
-import React from "react";
-import Board from "./pages/Board";
+import React, { useState } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap";
+import { Link, Route, BrowserRouter as Router } from "react-router-dom";
+import { useStoreActions } from "../store/hooks.store";
 
-const PlayGround = () => {
-  // const calculateWinner = (squares: Array<number>) => {
-  //   const lines = [
-  //     [0, 1, 2],
-  //     [3, 4, 5],
-  //     [6, 7, 8],
-  //     [0, 3, 6],
-  //     [1, 4, 7],
-  //     [2, 5, 8],
-  //     [0, 4, 8],
-  //     [2, 4, 6],
-  //   ];
-  //   for (let i = 0; i < lines.length; i++) {
-  //     const [a, b, c] = lines[i];
-  //     if (
-  //       squares[a] &&
-  //       squares[a] === squares[b] &&
-  //       squares[a] === squares[c]
-  //     ) {
-  //       console.log(squares[a]);
-  //       return squares[a];
-  //     }
-  //   }
-  //   return null;
-  // };
+function PlayGround() {
+  const { setBoardSide } = useStoreActions((actions) => {
+    return actions.boardModel;
+  });
+
+  const [boardSideState, setBoardSideState] = useState("");
+  const [isPlayButtonClicked, setIsPlayButtonClicked] = useState(false);
+
+  const handleSetBoardSide = (boardSide: string) => {
+    setBoardSide(parseInt(boardSide));
+    setIsPlayButtonClicked((prev) => !prev);
+  };
 
   return (
-    <>
-      <div>
-        <Board/>
-        {/* calculateWinner={calculateWinner} */}
-      </div>
-    </>
+    <Container>
+      <Row className="justify-content-lg-center">
+        <div className="container-title">TIC TAC T🎅E!</div>
+      </Row>
+      <Row className="justify-content-md-center">
+        <Form>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Board Size</Form.Label>
+            <Form.Control
+              type="number"
+              value={boardSideState}
+              onChange={(e) => {
+                setBoardSideState(e.target.value);
+              }}
+              placeholder="Choose your board size i.e. 3 or 4"
+            />
+          </Form.Group>
+        </Form>
+      </Row >
+      <Row className="justify-content-md-center">
+        <Link
+          to="/board"
+          onClick={() => {
+            handleSetBoardSide(boardSideState);
+          }}
+          className="btn btn-primary"
+        >
+          Play
+        </Link>
+      </Row>
+    </Container>
   );
-};
+}
 
 export default PlayGround;

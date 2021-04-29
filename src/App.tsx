@@ -1,10 +1,13 @@
-import PlayGround from "./components/PlayGround";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+// import PlayGround from "./components/PlayGround";
+// import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import firebase from "firebase/app";
 import React from "react";
-import Home from "./components/pages/Home";
-import Navbar from "./components/Navbar";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import Board from "./components/pages/Board.page";
+import Home from "./components/pages/Home.page";
+import PlayGround from "./components/PlayGround";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -24,19 +27,12 @@ const App = () => {
     <Router>
       <Navbar />
       <Switch>
-        <Route path="/" exact>
-          <Home />
-        </Route>
-        <Route path="/3x3" exact>
-          <PlayGround />
-        </Route>
-        {/* <Route path="/4x4" exact>
-          <PlayGround />
-        </Route> */}
+        <Route exact path="/" component={Home} />
+        <Route exact path="/board-size" component={PlayGround} />
+        <Route exact path="/board" component={Board} />
       </Switch>
       <Footer />
     </Router>
   );
 };
-
 export default App;

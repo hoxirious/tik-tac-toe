@@ -4,8 +4,8 @@ export interface Model {
     boardModel: BoardModel;
 }
 
- const model: Model = {
-    boardModel: boardModel
+ export const model: Model = {
+    boardModel: boardModel,
 }
 
-export default model; 
+// export default model; 

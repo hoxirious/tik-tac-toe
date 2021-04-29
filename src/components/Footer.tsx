@@ -1,15 +1,15 @@
-import './styles/layout/loader.styles.layout';
+import React from 'react';
+import { Col, Container, Navbar, Row } from 'react-bootstrap';
+import './styles/layout/Footer.css';
 
-function Footer() {
+const FooterPage = () => {
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-content">
-            @tic-tac-toe
-        </div>
+    
+      <div className="footer">
+        <p className="copyright">&copy; {new Date().getFullYear()} Copyright: <a href="https://ponnyhubby.com"> Tik-tak-toe </a></p>
+          
       </div>
-    </footer>
   );
 }
 
-export default Footer;
+export default FooterPage;

@@ -1,7 +1,7 @@
-import { CellProps } from "../../store/interfaces.store";
+import { iCellProps } from "../../store/interfaces.store";
 
 
-function Cell(props: CellProps) {
+function Cell(props: iCellProps) {
   const { player, onClick } = props;
 
   const decidePlayer = (player:string) => {

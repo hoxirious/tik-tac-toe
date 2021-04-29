@@ -1,9 +1,9 @@
-export interface Cell{
+export interface iCell{
     oneDPosition: number,
-    isPlayerOne: boolean
+    whatPlayer: string
 };
 
-export interface CellProps {
+export interface iCellProps {
     player: string;
     onClick: () => void;
   }

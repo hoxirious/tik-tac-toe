@@ -7,7 +7,7 @@
   --lightblue: #6289eb;
   --pink: #d175b7;
 }
-.footer {
+/* .footer {
   background-color: var(--lightblue);
   height: 50px;
   display: flex;
@@ -15,9 +15,28 @@
   justify-content: center;
   align-items: center;
   margin: auto;
-}
 
-@media screen and (min-width: 667px) {
+  
+}  */
+
+   .footer {
+        position: relative;
+        height: 50px;
+        width: 100%;
+        background-color: #333333;
+    }
+
+    p.copyright {
+        position: absolute;
+        width: 100%;
+        color: #fff;
+        line-height: 40px;
+        font-size: 0.7em;
+        text-align: center;
+        top:3px;
+    }
+
+/* @media screen and (min-width: 667px) {
   .footer {
     display: flex;
     max-width: 90%;
@@ -28,4 +47,4 @@
     display: flex;
     max-width: 80%;
   }
-}
+} */
