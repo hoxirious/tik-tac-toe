@@ -1,6 +1,6 @@
+import axios from "axios";
 import { action, Action, Thunk, thunk } from "easy-peasy";
 import { iCell } from "../interfaces.store";
-import axios from "axios";
 import { Model } from "./loader.model";
 
 interface BoardState {
@@ -10,43 +10,58 @@ interface BoardState {
 
 interface BoardActions {
   setBoardSide: Action<this, number>;
+  createBoardData: Action<this, iCell[]>;
   setCell: Action<this, iCell>;
+  pushCell: Action<this, iCell>;
 }
 
 interface BoardThunk {
   sendBoardSide: Thunk<this, number, undefined, Model>;
   sendCellState: Thunk<this, iCell, undefined, Model>;
-  beforeSetCell: Thunk<this, iCell, undefined, Model>;
+  thunkToSetCell: Thunk<this, iCell, undefined, Model>;
 }
 
 export interface BoardModel extends BoardState, BoardActions, BoardThunk {}
 
+/**
+ * Initialization of boardModel  
+ */
 export const boardModel: BoardModel = {
-  board: [{oneDPosition: 0,
-    whatPlayer: "X",}],
-  boardSide: 3,
-
+  board: [],
+  boardSide: 0,
 
   //ACTIONS
   setBoardSide: action((state, payload) => {
     state.boardSide = payload;
   }),
 
-  setCell: action((state, payload) => {
+  pushCell: action((state, payload) => {
     state.board.push(payload);
   }),
 
+  setCell: action((state, payload) => {
+    const atCell: number = payload.oneDPosition;
+    state.board[atCell] = payload;
+  }),
+
+  createBoardData: action((state, payload) => {
+    state.board = payload;
+  }),
 
   //THUNKS
-  beforeSetCell: thunk((actions, payload, { getStoreState })=>
-      {const {board} = getStoreState().boardModel; 
-      const cellFound = board.find((cell) => cell.oneDPosition==payload.oneDPosition)
-    
-      if(cellFound){
-        actions.setCell(payload);
-      }
+  thunkToSetCell: thunk((actions, payload, { getStoreState }) => {
+    const { board } = getStoreState().boardModel;
+    const cellFound = board.find(
+      (cell) => cell.oneDPosition === payload.oneDPosition,
+    );
+
+    if (!cellFound) {
+      actions.pushCell(payload);
+    } else {
+      actions.setCell(payload);
     }
-  ),
+  }),
+
   sendBoardSide: thunk((actions, payload, { getStoreState }) => {
     axios
       .post("https://jsonplaceholder.typicode.com/posts")

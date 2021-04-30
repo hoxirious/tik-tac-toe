@@ -1,9 +1,14 @@
+/**
+ * Global Cell Interface 
+ */
 export interface iCell{
     oneDPosition: number,
-    whatPlayer: string
+    currentPlayer: string
 };
 
-export interface iCellProps {
-    player: string;
-    onClick: () => void;
+/**
+ * Global Cell Interface with function
+ */
+export interface iCellProps extends iCell{
+    onClick: () => void
   }
