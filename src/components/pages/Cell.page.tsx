@@ -1,10 +1,9 @@
 import { iCellProps } from "../../store/interfaces.store";
 
-
 function Cell(props: iCellProps) {
-  const { player, onClick } = props;
+  const { currentPlayer, onClick } = props;
 
-  const decidePlayer = (player:string) => {
+  const decidePlayer = (player: string) => {
     return player === "X" ? true : false;
   };
 
@@ -13,11 +12,12 @@ function Cell(props: iCellProps) {
       <button
         className="square"
         onClick={onClick}
-        id={decidePlayer(player) ? "square-xplayer" : "square-oplayer"}
+        id={decidePlayer(currentPlayer) ? "square-xplayer" : "square-oplayer"}
       >
-        {player}
+        {currentPlayer}
       </button>
     </div>
   );
 }
+
 export default Cell;
