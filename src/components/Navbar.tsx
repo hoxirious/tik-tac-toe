@@ -1,8 +1,5 @@
+import { Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Navbar, Nav } from "react-bootstrap";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Home from "./pages/Home.page";
-import PlayGround from "./PlayGround";
 
 function Navbars() {
   return (

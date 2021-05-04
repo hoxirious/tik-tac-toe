@@ -7,6 +7,17 @@ import Board from "./components/pages/Board.page";
 import Home from "./components/pages/Home.page";
 import PlayGround from "./components/PlayGround";
 
+if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+  const BASE_HOST = "localhost";
+  const FIRESTORE_PORT = 8080;
+  const AUTH_PORT = 9099;
+
+  firebase.firestore().useEmulator(BASE_HOST, FIRESTORE_PORT);
+  firebase.auth().useEmulator(`http://${BASE_HOST}:${AUTH_PORT}`);
+} else {
+  // production code
+}
+
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyB46Mwg0lYMJ4BPeCPI0YHSEZcUw4gCL74",
