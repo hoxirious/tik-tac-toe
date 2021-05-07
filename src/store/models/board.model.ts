@@ -1,11 +1,12 @@
 import axios from "axios";
 import { action, Action, Thunk, thunk } from "easy-peasy";
-import { iCell } from "../interfaces.store";
-import { Model } from "./loader.model";
+import { iCell, iMakeMove } from "../interfaces.store";
+import { Model } from "../../loader/model.loader";
 
 interface BoardState {
   board: iCell[];
   boardSide: number;
+  isWon: boolean;
 }
 
 interface BoardActions {
@@ -13,22 +14,23 @@ interface BoardActions {
   createBoardData: Action<this, iCell[]>;
   setCell: Action<this, iCell>;
   pushCell: Action<this, iCell>;
+  setIsWon: Action<this, boolean>;
 }
 
 interface BoardThunk {
-  sendBoardSide: Thunk<this, number, undefined, Model>;
-  sendCellState: Thunk<this, iCell, undefined, Model>;
   thunkToSetCell: Thunk<this, iCell, undefined, Model>;
+  thunkSendMakeMove: Thunk<this, iMakeMove, undefined, Model>;
 }
 
 export interface BoardModel extends BoardState, BoardActions, BoardThunk {}
 
 /**
- * Initialization of boardModel  
+ * Initialization of boardModel
  */
 export const boardModel: BoardModel = {
   board: [],
   boardSide: 0,
+  isWon: false,
 
   //ACTIONS
   setBoardSide: action((state, payload) => {
@@ -48,6 +50,10 @@ export const boardModel: BoardModel = {
     state.board = payload;
   }),
 
+  setIsWon: action((state, payload) => {
+    state.isWon = payload;
+  }),
+
   //THUNKS
   thunkToSetCell: thunk((actions, payload, { getStoreState }) => {
     const { board } = getStoreState().boardModel;
@@ -62,21 +68,17 @@ export const boardModel: BoardModel = {
     }
   }),
 
-  sendBoardSide: thunk((actions, payload, { getStoreState }) => {
-    axios
-      .post("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => {})
+  thunkSendMakeMove: thunk(async (actions, payload) => {
+    await axios
+      .post(
+        "(http://localhost:5001/tic-tac-toe-90fde/us-central1/makeMove).",
+        payload,
+      )
+      .then((response) => {
+        actions.setIsWon(response.data);
+      })
       .catch((error) => {
-        console.log(error);
-      });
-  }),
-
-  sendCellState: thunk((actions, payload, { getStoreState }) => {
-    axios
-      .post("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => {})
-      .catch((error) => {
-        console.log(error);
+        console.error("Cannot make love");
       });
   }),
 };

@@ -1,5 +1,5 @@
 import {createStore} from "easy-peasy"
-import {model} from "./models/loader.model";
+import {model} from "./model.loader";
 
 const store = createStore(model);
 

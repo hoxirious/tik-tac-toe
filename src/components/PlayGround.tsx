@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Container, Form, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useStoreActions } from "../store/hooks.store";
+import { useStoreActions, useStoreState } from "../store/hooks.store";
 import { iCell } from "../store/interfaces.store";
 
 /**
@@ -10,13 +10,25 @@ import { iCell } from "../store/interfaces.store";
  * and be prompted to the desired board game
  */
 function PlayGround() {
-  const { setBoardSide, createBoardData } = useStoreActions(
-    (actions) => {
-      return actions.boardModel;
-    },
-  );
+  const { setBoardSide, createBoardData } = useStoreActions((actions) => {
+    return actions.boardModel;
+  });
+  const { thunkSendCreateGame } = useStoreActions((actions) => {
+    return actions.joinModel;
+  });
+  const { userId } = useStoreState((store) => {
+    return store.joinModel;
+  });
 
-  const [boardSideEntry, setBoardSideEntry] = useState("");
+  const { boardSide } = useStoreState((store) => {
+    return store.boardModel;
+  });
+
+  const simulateNetworkRequest = () => {
+    return new Promise((resolve) => setTimeout(resolve, 2000));
+  };
+
+  const [isLoading, setLoading] = useState(false);
 
   /**
    *
@@ -26,13 +38,19 @@ function PlayGround() {
   const handleSetBoardSide = (boardSideLength: string) => {
     const intBoardSide = parseInt(boardSideLength);
     setBoardSide(intBoardSide);
+    thunkSendCreateGame({
+      boardSideLength: intBoardSide,
+      userId: userId,
+    });
+
     handleCreateBoardData(intBoardSide);
   };
 
+  const [boardSideEntry, setBoardSideEntry] = useState("");
   /**
-   * 
+   *
    * @param boardSideLength
-   * @todo Initialize the data of Board  
+   * @todo Initialize the data of Board
    */
   const handleCreateBoardData = (boardSideLength: number) => {
     const BoardData = [];
@@ -46,6 +64,14 @@ function PlayGround() {
     }
     createBoardData(BoardData);
   };
+
+  useEffect(() => {
+    if (isLoading) {
+      simulateNetworkRequest().then(() => {
+        setLoading(false);
+      });
+    }
+  }, [isLoading]);
 
   return (
     <Container>
@@ -70,14 +96,16 @@ function PlayGround() {
       </Row>
 
       <Row className="justify-content-md-center">
-        <Link
-          to="/board"
-          onClick={() => {
-            handleSetBoardSide(boardSideEntry);
-          }}
-          className="btn btn-primary"
-        >
-          Play
+        <Link to="/board">
+          <Button
+            variant="primary"
+            onClick={() =>
+               handleSetBoardSide(boardSideEntry)
+            }
+            className="btn btn-primary"
+          >
+            Play
+          </Button>
         </Link>
       </Row>
     </Container>

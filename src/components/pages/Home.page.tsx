@@ -1,17 +1,48 @@
-import { Col, Container, Row } from "react-bootstrap";
+import React, { useState } from "react";
+import { Col, Container, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { useStoreActions } from "../../store/hooks.store";
 import "../styles/pages/loader.styles.pages";
 
 function Home() {
+  const { setUserId } = useStoreActions((actions) => {
+    return actions.joinModel;
+  });
+  const [emailAddress, setEmailAddress] = useState("");
+
   return (
     <Container>
-      <div className="container">
-        <Row>WelCome to tic-tactoe</Row>
-        <Row>
-          <Col>1 of 3</Col>
-          <Col xs={5}>2 of 3 (wider)</Col>
-          <Col>3 of 3</Col>
-        </Row>
-      </div>
+      {/* <Row className="justify-content-md-center"> */}
+        <Form>
+          <Form.Group controlId="formGroupEmail">
+            <Form.Label>Email address</Form.Label>
+            <Col xs={5}>
+              <Form.Control
+                type="email"
+                value={emailAddress}
+                placeholder="Enter email"
+                onChange={(e) => {
+                  setEmailAddress(e.target.value);
+                }}
+              />
+            </Col>
+          </Form.Group>
+        </Form>
+      {/* </Row> */}
+
+      {/* <Row className="justify-content-md-center"> */}
+        <Col xs={5}>
+          <Link
+            to="/lobby" ///SHOULD GO TO
+            onClick={() => {
+              setUserId(emailAddress);
+            }}
+            className="btn btn-primary"
+          >
+            Login
+          </Link>
+        </Col>
+      {/* </Row> */}
     </Container>
   );
 }
