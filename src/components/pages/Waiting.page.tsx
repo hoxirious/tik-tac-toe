@@ -9,7 +9,7 @@ function Waiting() {
     return store.joinModel;
   });
 
-  const { createBoardData } = useStoreActions((actions) => {
+  const { createBoardData, setYourMove } = useStoreActions((actions) => {
     return actions.boardModel;
   });
   const [playerReady, setPlayerReady] = useState(false);
@@ -27,6 +27,7 @@ function Waiting() {
 
   const setUpBoardData = (boardSideLength: number) => {
     const BoardData = [];
+    setYourMove("O"); 
     const numEntry = boardSideLength * boardSideLength;
     for (let position = 0; position < numEntry; position++) {
       const initialCell: iCell = {

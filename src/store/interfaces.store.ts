@@ -1,3 +1,4 @@
+
 /**
  * Global Cell Interface
  */
@@ -29,8 +30,19 @@ export interface iMakeMove extends iJoinGame {
   move: number;
 }
 
+export enum ReadyStatus {
+  SUCCESS = "joined",
+}
 
-export const readyStatus = {
-    result: "joined",
-    message: "success"
+export type StatusFlag = "playing" | "waiting" | "played" | "abandoned";
+export interface GameSchema {
+  id: string;
+  boardSideLength: number;
+  player1Id: string;
+  player2Id: string | null;
+  currPlayerId: string;
+  winnerId: string | null;
+  status: StatusFlag;
+  player1MoveList: number[];
+  player2MoveList: number[];
 }

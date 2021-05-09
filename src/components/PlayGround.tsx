@@ -10,18 +10,16 @@ import { iCell } from "../store/interfaces.store";
  * and be prompted to the desired board game
  */
 function PlayGround() {
-  const { setBoardSide, createBoardData } = useStoreActions((actions) => {
-    return actions.boardModel;
-  });
+  const { setBoardSide, createBoardData, setYourMove } = useStoreActions(
+    (actions) => {
+      return actions.boardModel;
+    },
+  );
   const { thunkSendCreateGame } = useStoreActions((actions) => {
     return actions.joinModel;
   });
   const { userId } = useStoreState((store) => {
     return store.joinModel;
-  });
-
-  const { boardSide } = useStoreState((store) => {
-    return store.boardModel;
   });
 
   const simulateNetworkRequest = () => {
@@ -37,12 +35,12 @@ function PlayGround() {
    */
   const handleSetBoardSide = (boardSideLength: string) => {
     const intBoardSide = parseInt(boardSideLength);
+    setYourMove("X");
     setBoardSide(intBoardSide);
     thunkSendCreateGame({
       boardSideLength: intBoardSide,
       userId: userId,
     });
-
     handleCreateBoardData(intBoardSide);
   };
 
@@ -99,9 +97,7 @@ function PlayGround() {
         <Link to="/board">
           <Button
             variant="primary"
-            onClick={() =>
-               handleSetBoardSide(boardSideEntry)
-            }
+            onClick={() => handleSetBoardSide(boardSideEntry)}
             className="btn btn-primary"
           >
             Play

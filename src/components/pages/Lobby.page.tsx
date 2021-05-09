@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "../../store/hooks.store";
 
 function Lobby() {
-  const { thunkSendJoinGame } = useStoreActions((actions) => {
+  const { thunkSendJoinGame, setGameId } = useStoreActions((actions) => {
     return actions.joinModel;
   });
   const { userId } = useStoreState((store) => {
@@ -13,6 +13,7 @@ function Lobby() {
   const [gameIdEntry, setGameIdEntry] = useState("");
 
   const handlerJoinGame = async (gameIdEntry: string) => {
+    setGameId(gameIdEntry); 
     await thunkSendJoinGame({
       userId: userId,
       gameId: gameIdEntry,

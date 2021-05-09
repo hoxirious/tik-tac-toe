@@ -1,11 +1,12 @@
 import axios from "axios";
 import { action, Action, Thunk, thunk } from "easy-peasy";
-import { iCell, iMakeMove } from "../interfaces.store";
 import { Model } from "../../loader/model.loader";
+import { iCell, iMakeMove } from "../interfaces.store";
 
 interface BoardState {
   board: iCell[];
   boardSide: number;
+  yourMove: string;
   isWon: boolean;
 }
 
@@ -15,11 +16,12 @@ interface BoardActions {
   setCell: Action<this, iCell>;
   pushCell: Action<this, iCell>;
   setIsWon: Action<this, boolean>;
+  setYourMove: Action<this, string>;
 }
 
 interface BoardThunk {
   thunkToSetCell: Thunk<this, iCell, undefined, Model>;
-  thunkSendMakeMove: Thunk<this, iMakeMove, undefined, Model>;
+  thunkSendMakeMove: Thunk<this, iMakeMove, undefined, Model, Promise<void>>;
 }
 
 export interface BoardModel extends BoardState, BoardActions, BoardThunk {}
@@ -31,8 +33,12 @@ export const boardModel: BoardModel = {
   board: [],
   boardSide: 0,
   isWon: false,
+  yourMove: "",
 
   //ACTIONS
+  setYourMove: action((state, payload) => {
+    state.yourMove = payload;
+  }),
   setBoardSide: action((state, payload) => {
     state.boardSide = payload;
   }),
@@ -43,7 +49,7 @@ export const boardModel: BoardModel = {
 
   setCell: action((state, payload) => {
     const atCell: number = payload.oneDPosition;
-    state.board[atCell] = payload;
+    state.board[atCell].currentPlayer = payload.currentPlayer;
   }),
 
   createBoardData: action((state, payload) => {
@@ -57,7 +63,7 @@ export const boardModel: BoardModel = {
   //THUNKS
   thunkToSetCell: thunk((actions, payload, { getStoreState }) => {
     const { board } = getStoreState().boardModel;
-    const cellFound = board.find(
+    const cellFound = board.some(
       (cell) => cell.oneDPosition === payload.oneDPosition,
     );
 
@@ -71,11 +77,11 @@ export const boardModel: BoardModel = {
   thunkSendMakeMove: thunk(async (actions, payload) => {
     await axios
       .post(
-        "(http://localhost:5001/tic-tac-toe-90fde/us-central1/makeMove).",
+        "http://localhost:5001/tic-tac-toe-90fde/us-central1/makeMove",
         payload,
       )
       .then((response) => {
-        actions.setIsWon(response.data);
+        actions.setIsWon(response.data.isWon);
       })
       .catch((error) => {
         console.error("Cannot make love");
