@@ -1,0 +1,33 @@
+// import { Row, Spinner } from "react-bootstrap";
+// import { Route } from "react-router-dom";
+// import { useStoreState } from "../store/hooks.store";
+// import Board from "./pages/Board.page";
+
+// const PendingRoute = ({  component: Component<>, ...rest }) => {
+//     const { playerIds } = useStoreState((store) => {
+//         return store.boardModel;
+//       });
+//       const isRoomReady = (listPlayers: string[]) => {
+//         return listPlayers.length === 2;
+//       };
+//   const spinner = () => {
+//     return (
+//       <Row className="justify-content-md-center">
+//         <Spinner animation="border" role="status">
+//           <span className="sr-only">Loading...</span>
+//         </Spinner>
+//       </Row>
+//     );
+//   };
+
+//   return (
+//     <Route
+//     {...props}
+//       render={(routeProps) => ({
+//         isRoomReady(playerIds)?
+//           <Component {...props} />:
+//       }
+//       )}
+//     />
+//   );
+// };

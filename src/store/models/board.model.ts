@@ -8,6 +8,8 @@ interface BoardState {
   boardSide: number;
   yourMove: string;
   isWon: boolean;
+  playerIds: string[];
+  winner: string;
 }
 
 interface BoardActions {
@@ -15,12 +17,15 @@ interface BoardActions {
   createBoardData: Action<this, iCell[]>;
   setCell: Action<this, iCell>;
   pushCell: Action<this, iCell>;
+  addPlayerIds: Action<this, string>;
   setIsWon: Action<this, boolean>;
   setYourMove: Action<this, string>;
+  setWinner: Action<this,string>; 
 }
 
 interface BoardThunk {
   thunkToSetCell: Thunk<this, iCell, undefined, Model>;
+  thunkAddPlayerIds: Thunk<this, string, undefined, Model>;
   thunkSendMakeMove: Thunk<this, iMakeMove, undefined, Model, Promise<void>>;
 }
 
@@ -34,6 +39,8 @@ export const boardModel: BoardModel = {
   boardSide: 0,
   isWon: false,
   yourMove: "",
+  playerIds: [],
+  winner:"",
 
   //ACTIONS
   setYourMove: action((state, payload) => {
@@ -59,8 +66,27 @@ export const boardModel: BoardModel = {
   setIsWon: action((state, payload) => {
     state.isWon = payload;
   }),
+  addPlayerIds: action((state, payload) => {
+    state.playerIds.push(payload);
+  }),
+  
+  setWinner: action((state,payload) =>{
+    state.winner = payload;
+  }),
 
   //THUNKS
+  thunkAddPlayerIds: thunk((actions, payload, { getState }) => {
+    const playerIds = getState().playerIds;
+    if (playerIds != null) {
+      const userFound = playerIds.some((eachUser) => eachUser === payload);
+      if (!userFound) {
+        actions.addPlayerIds(payload);
+      }
+    } else {
+      actions.addPlayerIds(payload);
+    }
+  }),
+
   thunkToSetCell: thunk((actions, payload, { getStoreState }) => {
     const { board } = getStoreState().boardModel;
     const cellFound = board.some(

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { useStoreActions, useStoreState } from "../../store/hooks.store";
+import "../styles/global/font.css";
 import "../styles/pages/loader.styles.pages";
 import Cell from "./Cell.page";
 
@@ -9,12 +11,19 @@ import Cell from "./Cell.page";
  */
 const Board = () => {
   //Initialize store states, actions and thunks
-  const { boardSide, board, isWon, yourMove } = useStoreState((store) => {
-    return store.boardModel;
-  });
 
-  const { boardSideP2, gameId, userId } = useStoreState((store) => {
+  const { currPlayerId, gameId, userId } = useStoreState((store) => {
     return store.joinModel;
+  });
+  const {
+    boardSide,
+    board,
+    isWon,
+    yourMove,
+    playerIds,
+    winner,
+  } = useStoreState((store) => {
+    return store.boardModel;
   });
 
   const { thunkToSetCell, thunkSendMakeMove } = useStoreActions((actions) => {
@@ -22,10 +31,13 @@ const Board = () => {
   });
 
   //Initialize local states
-  const localBoardSide = boardSide === 0 ? boardSideP2 : boardSide;
-  const totalCells = localBoardSide * localBoardSide;
+  const totalCells = boardSide * boardSide;
 
   const [cellsState, setCellsState] = useState(Array(totalCells).fill(""));
+
+  const isXTurn = () => {
+    return playerIds[0] === currPlayerId;
+  };
 
   /**
    *
@@ -34,10 +46,6 @@ const Board = () => {
    * use thunk to update state in store
    */
   const handlePlayer = async (whichCell: number) => {
-    if (isWon) {
-      return;
-    }
-
     const cells = cellsState.slice();
     ///need to triggered to re-render
 
@@ -54,6 +62,9 @@ const Board = () => {
       oneDPosition: whichCell,
       currentPlayer: cells[whichCell],
     });
+    if (isWon) {
+      return;
+    }
   };
 
   /**
@@ -95,35 +106,65 @@ const Board = () => {
         </div>,
       );
     }
+    console.log(gameId);
     return BoardUI;
   };
   return (
-    <div className="container">
-      <div className="container-main">
-        <div className="container-title">TIC TAC T🎅E!</div>
-        <div className="players-status">
-          <button
-            className="players-status"
-            // id={clickState ? "active-x-player" : "inactive-x-player"}
-          >
-            X
-          </button>
-          <button
-            className="players-status"
-            // id={!clickState ? "active-o-player" : "inactive-o-player"}
-          >
-            O
-          </button>
+    <Container className="container d-flex flex-column justify-content-center w-100">
+      {winner === "" && (
+        <div>
+          <Row className="container-main d-flex ">
+            <Col
+              className="container-title"
+              style={{
+                fontFamily: "Pangolin",
+                fontSize: "3.5em",
+                color: "var(--red)",
+                textAlign: "center",
+                marginBottom: "-5px",
+              }}
+            >
+              tic-tac-toe
+            </Col>
+          </Row>
+
+          <Row>
+            <Col className="players-status d-flex justify-content-center">
+              <button
+                className="players-status"
+                id={isXTurn() ? "active-x-player" : "inactive-x-player"}
+              >
+                X
+              </button>
+              <button
+                className="players-status"
+                id={!isXTurn() ? "active-o-player" : "inactive-o-player"}
+              >
+                O
+              </button>
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              className="board justify-content-center"
+              id={boardSide === 3 ? "board-3x3" : "board-4x4"}
+            >
+              {createBoardUI(boardSide, boardSide)}
+            </Col>
+          </Row>
         </div>
-        <div
-          className="board"
-          id={localBoardSide === 3 ? "board-3x3" : "board-4x4"}
-        >
-          {console.log(gameId)}
-          {createBoardUI(localBoardSide, localBoardSide)}
+      )}
+      {winner && (
+        <div>
+          <div>{`The Winner is ${winner}`}</div>
+          <div>
+              <Button variant="primary"
+              href="/"
+              >Leave</Button>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </Container>
   );
 };
 

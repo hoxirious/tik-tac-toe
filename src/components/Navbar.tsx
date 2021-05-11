@@ -1,15 +1,11 @@
 import { Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 function Navbars() {
   return (
-    <Navbar bg="dark" variant="dark">
-      <Navbar.Brand as={Link} to="/">
+    <Navbar bg="dark" variant="dark"> 
+      <Navbar.Brand  href="/">
         tic-tac-toe
       </Navbar.Brand>
-      {/* <Nav className="mr-auto">
-        <Link to="/board-size">Board size</Link>
-      </Nav> */}
     </Navbar>
   );
 }

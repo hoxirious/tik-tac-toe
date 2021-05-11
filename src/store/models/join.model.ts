@@ -75,8 +75,20 @@ export const joinModel: JoinModel = {
         const doc = snapshot.data() as GameSchema | undefined;
 
         if (doc) {
-          
           action.setCurrPlayerId(doc.currPlayerId);
+          getStoreActions().boardModel.setBoardSide(doc.boardSideLength);
+
+          if (doc.winnerId != null) {
+            getStoreActions().boardModel.setWinner(doc.winnerId);
+          }
+          if (doc.player1Id != null) {
+            getStoreActions().boardModel.thunkAddPlayerIds(doc.player1Id);
+          }
+          if (doc.player2Id != null) {
+            getStoreActions().joinModel.setReady(true);
+            getStoreActions().boardModel.thunkAddPlayerIds(doc.player2Id);
+          }
+
           const isPlayerOne = getState().userId === doc.player1Id;
           const length = isPlayerOne
             ? doc.player2MoveList.length

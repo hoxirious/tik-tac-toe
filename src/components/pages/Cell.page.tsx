@@ -4,7 +4,7 @@ import { iCellProps } from "../../store/interfaces.store";
 function Cell(props: iCellProps) {
   const { oneDPosition, currentPlayer, onClick } = props;
 
-  const { userId, currPlayerId } = useStoreState((store) => {
+  const { userId, currPlayerId, isReady } = useStoreState((store) => {
     return store.joinModel;
   });
 
@@ -17,37 +17,51 @@ function Cell(props: iCellProps) {
   };
 
   const handlerCellOnClick = () => {
-    console.log("Call here");
     onClick();
   };
 
   const isYourTurn = () => {
     return userId === currPlayerId;
   };
+  const activeBoard = () => {
+    return (
+      <button
+        className="square"
+        onClick={() => handlerCellOnClick()}
+        id={decidePlayer(currentPlayer) ? "square-xplayer" : "square-oplayer"}
+      >
+        {board[oneDPosition].currentPlayer}
+      </button>
+    );
+  };
+  const staticBoard = () => {
+    return (
+      <button
+        className="square"
+        id={decidePlayer(currentPlayer) ? "square-xplayer" : "square-oplayer"}
+      >
+        {board[oneDPosition].currentPlayer}
+      </button>
+    );
+  };
 
   return (
     <div>
-      {isYourTurn() && (
-        <button
-          className="square"
-          onClick={() => handlerCellOnClick()}
-          id={decidePlayer(currentPlayer) ? "square-xplayer" : "square-oplayer"}
-        >
-          {board[oneDPosition].currentPlayer}
-        </button>
+      {isReady  && (
+        <div>
+          {isYourTurn() && activeBoard()}
+          {!isYourTurn() && staticBoard()}
+        </div>
       )}
 
-      {!isYourTurn() && (
-        <button
-          className="square"
-          id={decidePlayer(currentPlayer) ? "square-xplayer" : "square-oplayer"}
-        >
-          {/* {oneDPosition} */}
-          {board[oneDPosition].currentPlayer}
-        </button>
+      {!isReady  && (
+        <div>
+          {isYourTurn() && staticBoard()}
+          {!isYourTurn() && staticBoard()}
+        </div>
       )}
+
     </div>
   );
 }
-
 export default Cell;

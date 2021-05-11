@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "../store/hooks.store";
 import { iCell } from "../store/interfaces.store";
@@ -72,28 +72,31 @@ function PlayGround() {
   }, [isLoading]);
 
   return (
-    <Container>
-      <Row className="justify-content-lg-center">
-        <div className="container-title">TIC TAC T🎅E!</div>
+    <Container className="d-flex flex-column align-items-center justify-content-center">
+      <Row>
+        <Col className="container-title">tic-tac-toe</Col>
       </Row>
 
-      <Row className="justify-content-md-center">
+      <Row>
         <Form>
-          <Form.Group controlId="formGetBoardSideLength">
-            <Form.Label>Board Size</Form.Label>
+          <Form.Group
+            className="d-flex  flex-column justify-content-center"
+            controlId="formGetBoardSideLength"
+          >
+            <Form.Label style={{ textAlign: "center" }}>Board Size</Form.Label>
             <Form.Control
               type="number"
               value={boardSideEntry}
               onChange={(e) => {
                 setBoardSideEntry(e.target.value);
               }}
-              placeholder="Choose your board size i.e. 3 or 4"
+              placeholder="Choose your board size"
             />
           </Form.Group>
         </Form>
       </Row>
 
-      <Row className="justify-content-md-center">
+      <Row className="justify-content-center">
         <Link to="/board">
           <Button
             variant="primary"
