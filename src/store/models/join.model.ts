@@ -3,6 +3,7 @@ import { action, Action, thunk, Thunk } from "easy-peasy";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { Model } from "../../loader/model.loader";
+import { apiUrl, generateToken } from "../../services/firestore.service";
 import {
   GameSchema,
   iCell,
@@ -15,7 +16,6 @@ interface JoinStatus {
   userId: string;
   isReady: boolean;
   gameId: string;
-  boardSideP2: number;
   currPlayerId: string;
 }
 
@@ -23,7 +23,6 @@ interface JoinAction {
   setReady: Action<this, boolean>;
   setUserId: Action<this, string>;
   setGameId: Action<this, string>;
-  setBoardSideP2: Action<this, number>;
   setCurrPlayerId: Action<this, string>;
 }
 interface JoinThunk {
@@ -38,7 +37,6 @@ export const joinModel: JoinModel = {
   isReady: false,
   userId: "",
   gameId: "",
-  boardSideP2: 0,
   currPlayerId: "",
 
   //ACTION
@@ -52,10 +50,6 @@ export const joinModel: JoinModel = {
 
   setGameId: action((state, payload) => {
     state.gameId = payload;
-  }),
-
-  setBoardSideP2: action((state, payload) => {
-    state.boardSideP2 = payload;
   }),
 
   setCurrPlayerId: action((state, payload) => {
@@ -78,6 +72,10 @@ export const joinModel: JoinModel = {
           action.setCurrPlayerId(doc.currPlayerId);
           getStoreActions().boardModel.setBoardSide(doc.boardSideLength);
 
+          if (doc.id != null) {
+            getStoreActions().joinModel.setGameId(doc.id);
+          }
+
           if (doc.winnerId != null) {
             getStoreActions().boardModel.setWinner(doc.winnerId);
           }
@@ -99,6 +97,7 @@ export const joinModel: JoinModel = {
           const updateBoard = (responseCell: iCell) => {
             getStoreActions().boardModel.thunkToSetCell(responseCell);
           };
+
           if (oneDPosition != null) {
             if (isPlayerOne) {
               const responseCell: iCell = {
@@ -120,11 +119,21 @@ export const joinModel: JoinModel = {
   ),
 
   thunkSendCreateGame: thunk(async (action, payload) => {
+    const userToken = await generateToken();
+    console.log(`Create game token is ${userToken}`);
     await axios
-      .post("http://localhost:5001/tic-tac-toe-90fde/us-central1/createGame", {
-        boardSideLength: payload.boardSideLength,
-        userId: payload.userId,
-      })
+      .post(
+        `${apiUrl}createGame`,
+        {
+          boardSideLength: payload.boardSideLength,
+          userId: payload.userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        },
+      )
       .then((response) => {
         const responseGameId = response.data.gameId;
         //response is gameID
@@ -138,18 +147,24 @@ export const joinModel: JoinModel = {
   }),
 
   thunkSendJoinGame: thunk(async (action, payload, { getState }) => {
+    const userToken = await generateToken();
     await axios
-      .post("http://localhost:5001/tic-tac-toe-90fde/us-central1/joinGame", {
-        userId: payload.userId,
-        gameId: payload.gameId,
-      })
+      .post(
+        `${apiUrl}joinGame`,
+        {
+          userId: payload.userId,
+          gameId: payload.gameId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        },
+      )
       .then((response) => {
         //response is message and result
         if (response.data.result === ReadyStatus.SUCCESS) {
-          action.setReady(true);
-          action.setBoardSideP2(response.data.game.boardSideLength);
           action.thunkOnSnapShot(getState().gameId);
-          console.log(response.data.game.boardSideLength);
         } else {
           console.error("The player is not ready");
         }

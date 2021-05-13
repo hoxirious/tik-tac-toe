@@ -1,6 +1,7 @@
 import axios from "axios";
 import { action, Action, Thunk, thunk } from "easy-peasy";
 import { Model } from "../../loader/model.loader";
+import {apiUrl, generateToken } from "../../services/firestore.service";
 import { iCell, iMakeMove } from "../interfaces.store";
 
 interface BoardState {
@@ -20,7 +21,7 @@ interface BoardActions {
   addPlayerIds: Action<this, string>;
   setIsWon: Action<this, boolean>;
   setYourMove: Action<this, string>;
-  setWinner: Action<this,string>; 
+  setWinner: Action<this, string>;
 }
 
 interface BoardThunk {
@@ -40,7 +41,7 @@ export const boardModel: BoardModel = {
   isWon: false,
   yourMove: "",
   playerIds: [],
-  winner:"",
+  winner: "",
 
   //ACTIONS
   setYourMove: action((state, payload) => {
@@ -69,8 +70,8 @@ export const boardModel: BoardModel = {
   addPlayerIds: action((state, payload) => {
     state.playerIds.push(payload);
   }),
-  
-  setWinner: action((state,payload) =>{
+
+  setWinner: action((state, payload) => {
     state.winner = payload;
   }),
 
@@ -101,11 +102,13 @@ export const boardModel: BoardModel = {
   }),
 
   thunkSendMakeMove: thunk(async (actions, payload) => {
+    const userToken = await generateToken();
     await axios
-      .post(
-        "http://localhost:5001/tic-tac-toe-90fde/us-central1/makeMove",
-        payload,
-      )
+      .post(`${apiUrl}makeMove`, payload, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
       .then((response) => {
         actions.setIsWon(response.data.isWon);
       })

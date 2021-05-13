@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "../../store/hooks.store";
@@ -13,13 +13,7 @@ function Waiting() {
     return actions.boardModel;
   });
 
-  const simulateNetworkRequest = () => {
-    return new Promise((resolve) => setTimeout(resolve, 2000));
-  };
-  const [isLoading, setLoading] = useState(false);
-
   const handleSendJoinGame = async () => {
-    setLoading(true);
     setUpBoardData(boardSide);
   };
 
@@ -37,13 +31,6 @@ function Waiting() {
     createBoardData(BoardData);
   };
 
-  useEffect(() => {
-    if (isLoading) {
-      simulateNetworkRequest().then(() => {
-        setLoading(false);
-      });
-    }
-  }, [isLoading]);
   return (
     <Container>
       <Row className="justify-content-md-center">

@@ -15,16 +15,10 @@ const Board = () => {
   const { currPlayerId, gameId, userId } = useStoreState((store) => {
     return store.joinModel;
   });
-  const {
-    boardSide,
-    board,
-    isWon,
-    yourMove,
-    playerIds,
-    winner,
-  } = useStoreState((store) => {
-    return store.boardModel;
-  });
+  const { boardSide, board, isWon, yourMove, playerIds, winner } =
+    useStoreState((store) => {
+      return store.boardModel;
+    });
 
   const { thunkToSetCell, thunkSendMakeMove } = useStoreActions((actions) => {
     return actions.boardModel;
@@ -37,6 +31,13 @@ const Board = () => {
 
   const isXTurn = () => {
     return playerIds[0] === currPlayerId;
+  };
+
+  const displayUserX = () => {
+    return userId === playerIds[0] ? "YOU" : playerIds[0];
+  };
+  const displayUserO = () => {
+    return userId === playerIds[1] ? "YOU" : playerIds[1];
   };
 
   /**
@@ -106,7 +107,6 @@ const Board = () => {
         </div>,
       );
     }
-    console.log(gameId);
     return BoardUI;
   };
   return (
@@ -129,13 +129,15 @@ const Board = () => {
           </Row>
 
           <Row>
-            <Col className="players-status d-flex justify-content-center">
+            <Col className="players-status d-flex align-items-center justify-content-center">
+              <div style={{ color: " var(--cyan)" }}>{displayUserX()}</div>
               <button
                 className="players-status"
                 id={isXTurn() ? "active-x-player" : "inactive-x-player"}
               >
                 X
               </button>
+              <div style={{ color: " var(--pink)" }}>{displayUserO()}</div>
               <button
                 className="players-status"
                 id={!isXTurn() ? "active-o-player" : "inactive-o-player"}
@@ -155,13 +157,11 @@ const Board = () => {
         </div>
       )}
       {winner && (
-        <div>
-          <div>{`The Winner is ${winner}`}</div>
-          <div>
-              <Button variant="primary"
-              href="/"
-              >Leave</Button>
-          </div>
+        <div className="d-flex flex-column align-items-center">
+          <div>{`The winner is ${winner}`}</div>
+          <Button variant="primary" href="/" size="sm">
+            Leave
+          </Button>
         </div>
       )}
     </Container>

@@ -1,7 +1,12 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Board from "./components/pages/Board.page";
@@ -13,23 +18,28 @@ import PlayGround from "./components/PlayGround";
 import { firebaseConfig } from "./services/firestore.service";
 import Pending from "./components/pages/Pending.page";
 
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app(); // if already initialized, use that one
+}
 if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
   const BASE_HOST = "localhost";
   const FIRESTORE_PORT = 8080;
   // Initialize an instance of firebase
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  } else {
-    firebase.app(); // if already initialized, use that one
-  }
-  firebase.firestore().useEmulator(BASE_HOST, FIRESTORE_PORT);
+  // firebase.firestore().useEmulator(BASE_HOST, FIRESTORE_PORT);
 } else {
-  // production code
 }
+firebase.auth().signInAnonymously();
+
 const App = () => {
   const { playerIds } = useStoreState((store) => {
     return store.boardModel;
   });
+  const { isReady } = useStoreState((store) => {
+    return store.joinModel;
+  });
+
   const isRoomReady = (listPlayers: string[]) => {
     return listPlayers.length === 2;
   };
@@ -38,18 +48,20 @@ const App = () => {
       <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
+
         <Route exact path="/board-size" component={PlayGround} />
 
-        {isRoomReady(playerIds) && (
-          <Route exact path="/board" component={Board} />
-        )}
+        <Route exact path="/board">
+          {isRoomReady(playerIds) ? <Board /> : <Pending />}
+        </Route>
 
-        {!isRoomReady(playerIds) && (
-          <Route exact path="/board" component={Pending} />
-        )}
+        <Route exact path="/lobby">
+          {isReady ? <Redirect to="/waiting-room" /> : <Lobby />}
+        </Route>
 
-        <Route exact path="/lobby" component={Lobby} />
-        <Route exact path="/waiting-room" component={Joining} />
+        <Route exact path="/waiting-room">
+          {isReady ? <Joining /> : <Redirect to="/lobby" />}
+        </Route>
       </Switch>
       <Footer />
     </Router>

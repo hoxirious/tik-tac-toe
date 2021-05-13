@@ -20,7 +20,6 @@ function Home() {
     <Container className=" d-flex align-items-center">
       <Row
         className="d-flex align-items-center w-100"
-        style={{ height: "200px" }}
       >
         <Col md={{ span: 6, offset: 0 }}>
           <h1
