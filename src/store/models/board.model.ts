@@ -1,7 +1,7 @@
 import axios from "axios";
 import { action, Action, Thunk, thunk } from "easy-peasy";
 import { Model } from "../../loader/model.loader";
-import {apiUrl, generateToken } from "../../services/firestore.service";
+import { apiUrl, generateToken } from "../../services/firestore.service";
 import { iCell, iMakeMove } from "../interfaces.store";
 
 interface BoardState {
@@ -101,8 +101,9 @@ export const boardModel: BoardModel = {
     }
   }),
 
-  thunkSendMakeMove: thunk(async (actions, payload) => {
+  thunkSendMakeMove: thunk(async (actions, payload, { getStoreActions }) => {
     const userToken = await generateToken();
+    getStoreActions().joinModel.switchLoading(true);
     await axios
       .post(`${apiUrl}makeMove`, payload, {
         headers: {
@@ -111,9 +112,11 @@ export const boardModel: BoardModel = {
       })
       .then((response) => {
         actions.setIsWon(response.data.isWon);
+        getStoreActions().joinModel.switchLoading(false);
       })
       .catch((error) => {
-        console.error("Cannot make love");
+        getStoreActions().joinModel.switchLoading(false);
+        console.error("Cannot make move");
       });
   }),
 };

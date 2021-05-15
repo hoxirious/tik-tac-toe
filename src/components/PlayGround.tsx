@@ -77,20 +77,21 @@ function PlayGround() {
         <Col className="container-title">tic-tac-toe</Col>
       </Row>
 
-      <Row>
+      <Row sm={1} className="w-50">
         <Form>
           <Form.Group
-            className="d-flex  flex-column justify-content-center"
+            className="d-flex justify-content-center w-100"
             controlId="formGetBoardSideLength"
           >
-            <Form.Label style={{ textAlign: "center" }}>Board Size</Form.Label>
             <Form.Control
+              size="lg"
               type="number"
               value={boardSideEntry}
               onChange={(e) => {
                 setBoardSideEntry(e.target.value);
               }}
-              placeholder="Choose your board size"
+              placeholder="Choose your board size: (eg. 3)"
+              style={{ textAlign: "center" }}
             />
           </Form.Group>
         </Form>

@@ -27,7 +27,7 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
   const BASE_HOST = "localhost";
   const FIRESTORE_PORT = 8080;
   // Initialize an instance of firebase
-  // firebase.firestore().useEmulator(BASE_HOST, FIRESTORE_PORT);
+  firebase.firestore().useEmulator(BASE_HOST, FIRESTORE_PORT);
 } else {
 }
 firebase.auth().signInAnonymously();

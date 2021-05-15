@@ -36,7 +36,7 @@ function Waiting() {
       <Row className="justify-content-md-center">
         <Link to="/board">
           <Button variant="primary" onClick={() => handleSendJoinGame()}>
-            Chơi đi bạn
+            Play
           </Button>
         </Link>
       </Row>

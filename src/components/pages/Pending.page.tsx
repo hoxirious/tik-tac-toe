@@ -11,12 +11,17 @@ import {
 import { useStoreState } from "../../store/hooks.store";
 
 function Pending() {
-  const { gameId } = useStoreState((store) => {
+  const { gameId, isLoading } = useStoreState((store) => {
     return store.joinModel;
   });
   const popover = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" className="d-flex align-items-center">
       <Popover.Content className="all-copy">{`${gameId}`}</Popover.Content>
+      {isLoading && (
+        <Spinner animation="border" role="status" size="sm">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      )}
     </Popover>
   );
   return (
@@ -27,12 +32,12 @@ function Pending() {
         </Spinner>
       </Row>
       <Row className="mb-2">
-        <p>Mama told me to wait here...</p>
+        <p>Send this to your friend and wait them to join...</p>
       </Row>
       <Row>
         <Col>
           <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-            <Button variant="success">Game Id</Button>
+            <Button variant="success">Click to show match ID</Button>
           </OverlayTrigger>
         </Col>
       </Row>

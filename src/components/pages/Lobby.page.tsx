@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Button, Card, Col, Row, Container, Form } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Container,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "../../store/hooks.store";
 
@@ -7,7 +15,7 @@ function Lobby() {
   const { thunkSendJoinGame, setGameId } = useStoreActions((actions) => {
     return actions.joinModel;
   });
-  const { userId } = useStoreState((store) => {
+  const { userId, isLoading } = useStoreState((store) => {
     return store.joinModel;
   });
   const [gameIdEntry, setGameIdEntry] = useState("");
@@ -73,7 +81,7 @@ function Lobby() {
                     <Form.Control
                       type="text"
                       value={gameIdEntry}
-                      placeholder="Enter Game ID"
+                      placeholder="Enter Match ID"
                       onChange={(e) => {
                         setGameIdEntry(e.target.value);
                       }}
@@ -96,6 +104,11 @@ function Lobby() {
           </Card>
         </Col>
       </Row>
+      {isLoading && (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      )}
     </Container>
   );
 }

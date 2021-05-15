@@ -14,6 +14,7 @@ import {
 
 interface JoinStatus {
   userId: string;
+  isLoading: boolean;
   isReady: boolean;
   gameId: string;
   currPlayerId: string;
@@ -24,6 +25,7 @@ interface JoinAction {
   setUserId: Action<this, string>;
   setGameId: Action<this, string>;
   setCurrPlayerId: Action<this, string>;
+  switchLoading: Action<this, boolean>;
 }
 interface JoinThunk {
   thunkSendCreateGame: Thunk<this, iCreateGame>;
@@ -38,6 +40,7 @@ export const joinModel: JoinModel = {
   userId: "",
   gameId: "",
   currPlayerId: "",
+  isLoading: false,
 
   //ACTION
   setReady: action((state) => {
@@ -54,6 +57,10 @@ export const joinModel: JoinModel = {
 
   setCurrPlayerId: action((state, payload) => {
     state.currPlayerId = payload;
+  }),
+
+  switchLoading: action((state, payload) => {
+    state.isLoading = payload;
   }),
 
   thunkOnSnapShot: thunk(
@@ -120,19 +127,19 @@ export const joinModel: JoinModel = {
 
   thunkSendCreateGame: thunk(async (action, payload) => {
     const userToken = await generateToken();
-    console.log(`Create game token is ${userToken}`);
+    action.switchLoading(true);
     await axios
-      .post(
-        `${apiUrl}createGame`,
-        {
-          boardSideLength: payload.boardSideLength,
-          userId: payload.userId,
+    .post(
+      `${apiUrl}createGame`,
+      {
+        boardSideLength: payload.boardSideLength,
+        userId: payload.userId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        },
+      },
       )
       .then((response) => {
         const responseGameId = response.data.gameId;
@@ -140,14 +147,17 @@ export const joinModel: JoinModel = {
         action.setGameId(responseGameId);
         //function start onSnapshot
         action.thunkOnSnapShot(responseGameId);
+        action.switchLoading(false);
       })
       .catch((error) => {
+        action.switchLoading(false);
         console.error("The response of gameId is not fullfilled");
       });
   }),
 
   thunkSendJoinGame: thunk(async (action, payload, { getState }) => {
     const userToken = await generateToken();
+    action.switchLoading(true);
     await axios
       .post(
         `${apiUrl}joinGame`,
@@ -168,8 +178,10 @@ export const joinModel: JoinModel = {
         } else {
           console.error("The player is not ready");
         }
+        action.switchLoading(false);
       })
       .catch((error) => {
+        action.switchLoading(false);
         console.error("The response of Join Game is not fullfilled");
       });
   }),

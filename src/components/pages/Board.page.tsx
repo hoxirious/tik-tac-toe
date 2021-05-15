@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { useStoreActions, useStoreState } from "../../store/hooks.store";
 import "../styles/global/font.css";
 import "../styles/pages/loader.styles.pages";
@@ -12,7 +12,7 @@ import Cell from "./Cell.page";
 const Board = () => {
   //Initialize store states, actions and thunks
 
-  const { currPlayerId, gameId, userId } = useStoreState((store) => {
+  const { currPlayerId, gameId, userId, isLoading } = useStoreState((store) => {
     return store.joinModel;
   });
   const { boardSide, board, isWon, yourMove, playerIds, winner } =
@@ -163,6 +163,12 @@ const Board = () => {
             Leave
           </Button>
         </div>
+      )}
+
+      {isLoading && (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
       )}
     </Container>
   );
