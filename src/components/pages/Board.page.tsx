@@ -1,126 +1,84 @@
 import React, { useState } from "react";
-import { useStoreState, useStoreActions } from "../../store/hooks.store";
-import { iCell } from "../../store/interfaces.store";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
+import { useStoreActions, useStoreState } from "../../store/hooks.store";
+import "../styles/global/font.css";
 import "../styles/pages/loader.styles.pages";
 import Cell from "./Cell.page";
 
-/*
- *   0 | 1 | 2
- *  ---+---+---
- *   3 | 4 | 5
- *  ---+---+---
- *   6 | 7 | 8
+/**
+ *
+ * @returns A board game with given size
  */
-
-// const Board = () => {
-//   const { boardSide } = useStoreState((store) => {
-//     return store.boardModel;
-//   });
-//   const totalCells = boardSide*boardSide;
-//   const [cellsState, setCellsState] = useState(Array(totalCells).fill(""));
-
-//   const [clickState, setClickState] = useState(true);
-
-//   const handlePlayer = (whichCell: number) => {
-//     const cells = cellsState.slice();
-//     const xPlayer = clickState;
-
-//     cells[whichCell] = xPlayer ? "X" : "O";
-//     setCellsState(cells);
-//     setClickState(!clickState);
-//   };
-
-//   const createCell = (whichCell: number) => {
-//     return (
-//       <Cell
-//         key={whichCell}
-//         player={cellsState[whichCell]}
-//         onClick={() => {
-//           handlePlayer(whichCell);
-//         }}
-//       />
-//     );
-//   };
-
-//   const createBoard = (rows: number, cols: number) => {
-//     const board = [];
-
-//     for (let currentRow = 0; currentRow < rows; currentRow++) {
-//       let columns = [];
-//       for (let currentCol = 0; currentCol < cols; currentCol++) {
-//         let oneDPosition: number = currentCol * cols + (currentRow % rows);
-//         columns.push(createCell(oneDPosition));
-//       }
-//       board.push(
-//         <div key={currentRow} className="board-row">
-//           {columns}
-//         </div>,
-//       );
-//     }
-//     return board;
-//   };
-
-//   return (
-//     <div className="container">
-//       <div className="container-main">
-//       <div className="container-title">TIC TAC T🎅E!</div>
-//         <div className="players-status">
-//           <button
-//             className="players-status"
-//             id={clickState ? "active-x-player" : "inactive-x-player"}
-//           >
-//             X
-//           </button>
-//           <button
-//             className="players-status"
-//             id={!clickState ? "active-o-player" : "inactive-o-player"}
-//           >
-//             O
-//           </button>
-//         </div>
-//         <div
-//           className="board"
-//           id={boardSide === 3 ? "board-3x3" : "board-4x4"}
-//         >
-//           {createBoard(boardSide, boardSide)}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
 const Board = () => {
-  const { boardSide, board } = useStoreState((store) => {
-    return store.boardModel;
-  });
+  //Initialize store states, actions and thunks
 
-  const { beforeSetCell } = useStoreActions((actions) => {
+  const { currPlayerId, gameId, userId, isLoading } = useStoreState((store) => {
+    return store.joinModel;
+  });
+  const { boardSide, board, isWon, yourMove, playerIds, winner } =
+    useStoreState((store) => {
+      return store.boardModel;
+    });
+
+  const { thunkToSetCell, thunkSendMakeMove } = useStoreActions((actions) => {
     return actions.boardModel;
   });
+
+  //Initialize local states
   const totalCells = boardSide * boardSide;
 
-  const [curCell, setCurCell] = useState<iCell>({
-    oneDPosition: 0,
-    whatPlayer: "X",
-  });
-  const [clickState, setClickState] = useState(true);
+  const [cellsState, setCellsState] = useState(Array(totalCells).fill(""));
 
-  const handlePlayer = (whichCell: number) => {
-    const xPlayer = clickState;
-    const newCell: iCell = {
-      oneDPosition: whichCell,
-      whatPlayer: xPlayer ? "X" : "O",
-    };
-    setCurCell(newCell);
-    beforeSetCell(curCell);
-    setClickState(!clickState);
+  const isXTurn = () => {
+    return playerIds[0] === currPlayerId;
   };
 
+  const displayUserX = () => {
+    return userId === playerIds[0] ? "YOU" : playerIds[0];
+  };
+  const displayUserO = () => {
+    return userId === playerIds[1] ? "YOU" : playerIds[1];
+  };
+
+  /**
+   *
+   * @param whichCell given cell's position
+   * @todo This will add played value into cellsState array and
+   * use thunk to update state in store
+   */
+  const handlePlayer = async (whichCell: number) => {
+    const cells = cellsState.slice();
+    ///need to triggered to re-render
+
+    cells[whichCell] = yourMove;
+    setCellsState(cells);
+
+    await thunkSendMakeMove({
+      gameId: gameId,
+      userId: userId,
+      move: whichCell,
+    });
+
+    thunkToSetCell({
+      oneDPosition: whichCell,
+      currentPlayer: cells[whichCell],
+    });
+    if (isWon) {
+      return;
+    }
+  };
+
+  /**
+   *
+   * @param whichCell given cell's position
+   * @returns a Cell at given position
+   */
   const createCell = (whichCell: number) => {
     return (
       <Cell
         key={whichCell}
-        player={curCell.whatPlayer}
+        oneDPosition={whichCell}
+        currentPlayer={board[whichCell].currentPlayer}
         onClick={() => {
           handlePlayer(whichCell);
         }}
@@ -128,47 +86,92 @@ const Board = () => {
     );
   };
 
-  const createBoard = (rows: number, cols: number) => {
-    const board = [];
-
+  /**
+   *
+   * @param rows row size
+   * @param cols column size
+   * @returns Array of Cells for the UI
+   */
+  const createBoardUI = (rows: number, cols: number) => {
+    const BoardUI = [];
     for (let currentRow = 0; currentRow < rows; currentRow++) {
       let columns = [];
+
       for (let currentCol = 0; currentCol < cols; currentCol++) {
-        let oneDPosition: number = currentCol * cols + (currentRow % rows);
+        const oneDPosition = currentCol * cols + (currentRow % rows);
         columns.push(createCell(oneDPosition));
       }
-      board.push(
+      BoardUI.push(
         <div key={currentRow} className="board-row">
           {columns}
         </div>,
       );
     }
-    return board;
+    return BoardUI;
   };
-
   return (
-    <div className="container">
-      <div className="container-main">
-        <div className="container-title">TIC TAC T🎅E!</div>
-        <div className="players-status">
-          <button
-            className="players-status"
-            id={clickState ? "active-x-player" : "inactive-x-player"}
-          >
-            X
-          </button>
-          <button
-            className="players-status"
-            id={!clickState ? "active-o-player" : "inactive-o-player"}
-          >
-            O
-          </button>
+    <Container className="container d-flex flex-column justify-content-center w-100">
+      {winner === "" && (
+        <div>
+          <Row className="container-main d-flex ">
+            <Col
+              className="container-title"
+              style={{
+                fontFamily: "Pangolin",
+                fontSize: "3.5em",
+                color: "var(--red)",
+                textAlign: "center",
+                marginBottom: "-5px",
+              }}
+            >
+              tic-tac-toe
+            </Col>
+          </Row>
+
+          <Row>
+            <Col className="players-status d-flex align-items-center justify-content-center">
+              <div style={{ color: " var(--cyan)" }}>{displayUserX()}</div>
+              <button
+                className="players-status"
+                id={isXTurn() ? "active-x-player" : "inactive-x-player"}
+              >
+                X
+              </button>
+              <div style={{ color: " var(--pink)" }}>{displayUserO()}</div>
+              <button
+                className="players-status"
+                id={!isXTurn() ? "active-o-player" : "inactive-o-player"}
+              >
+                O
+              </button>
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              className="board justify-content-center"
+              id={boardSide === 3 ? "board-3x3" : "board-4x4"}
+            >
+              {createBoardUI(boardSide, boardSide)}
+            </Col>
+          </Row>
         </div>
-        <div className="board" id={boardSide === 3 ? "board-3x3" : "board-4x4"}>
-          {createBoard(boardSide, boardSide)}
+      )}
+      {winner && (
+        <div className="d-flex flex-column align-items-center">
+          <div>{`The winner is ${winner}`}</div>
+          <Button variant="primary" href="/" size="sm">
+            Leave
+          </Button>
         </div>
-      </div>
-    </div>
+      )}
+
+      {isLoading && (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      )}
+    </Container>
   );
 };
+
 export default Board;

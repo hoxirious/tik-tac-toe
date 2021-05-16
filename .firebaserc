@@ -1,5 +1,17 @@
 {
   "projects": {
-    "default": "tic-tac-toe-90fde"
+    "default": "tic-tac-toe-90fd"
+  },
+  "targets": {
+    "tic-tac-toe-90fde": {
+      "hosting": {
+        "app_v1": [
+          "tic-tac-toe-90fde"
+        ],
+        "app_v2": [
+          "ticotaco"
+        ]
+      }
+    }
   }
 }

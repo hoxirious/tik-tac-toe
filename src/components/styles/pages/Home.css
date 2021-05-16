@@ -1,12 +1,9 @@
 .container {
   width: 100%;
-  height: 667px;
-  font-family: "Times New Roman", Times, serif;
+  height: 94vh;
+  font-family: 'Nunito', sans-serDif;
   background-color: var(--milkywhite);
 }
-
-.container-content {
-  display: flex;
-  margin: auto;
+.card {
+  box-shadow: 5px 5px 30px 0px rgb(172, 172, 172);
 }
-
